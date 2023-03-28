@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,5 +51,19 @@ public class CourseController {
         var courseModel = courseModelOptional.get();
         BeanUtils.copyProperties(courseDto, courseModel);
         return ResponseEntity.status(HttpStatus.OK).body(courseService.save(courseModel));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CourseModel>>getAllCourses(){
+        return ResponseEntity.status(HttpStatus.OK).body(courseService.findAll());
+    }
+
+    @GetMapping("/{courseId}")
+    public ResponseEntity<Object>getOneCourse(@PathVariable(value = "courseId")UUID courseId){
+        Optional<CourseModel> courseModelOptional = courseService.findById(courseId);
+        if (!courseModelOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course not found.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(courseModelOptional.get());
     }
 }
