@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -41,5 +38,18 @@ public class LessonController {
         BeanUtils.copyProperties(lessonDto, lessonModel);
         lessonModel.setModule(moduleModelOptional.get());
         return ResponseEntity.status(HttpStatus.CREATED).body(lessonService.save(lessonModel));
+    }
+
+    @DeleteMapping("/modules/{moduleId}/lessons/{lessonId}")
+    public ResponseEntity<Object>deleteLesson(@PathVariable(value = "moduleId")UUID moduleId,
+                                              @PathVariable(value = "lessonId")UUID lessonId){
+
+        Optional<LessonModel> lessonModelOptional = lessonService.findLessonIntoModule(moduleId, lessonId);
+        if (!lessonModelOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lesson not found.");
+        }
+        lessonService.delete(lessonModelOptional.get());
+
+        return ResponseEntity.status(HttpStatus.OK).body("Lesson deleted successfully.");
     }
 }
