@@ -1,7 +1,5 @@
 package com.ead.course.controllers;
 
-
-import com.ead.course.dtos.CourseDto;
 import com.ead.course.dtos.ModuleDto;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.ModuleModel;
@@ -13,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
