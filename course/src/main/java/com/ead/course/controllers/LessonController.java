@@ -1,7 +1,6 @@
 package com.ead.course.controllers;
 
 import com.ead.course.dtos.LessonDto;
-import com.ead.course.dtos.ModuleDto;
 import com.ead.course.models.LessonModel;
 import com.ead.course.models.ModuleModel;
 import com.ead.course.services.LessonService;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -73,4 +71,14 @@ public class LessonController {
         return ResponseEntity.status(HttpStatus.OK).body(lessonService.findAllByModule(moduleId));
     }
 
+    @GetMapping("/courses/{courseId}/modules/{moduleId}")
+    public ResponseEntity<Object>getOneLesson(@PathVariable(value = "courseId")UUID moduleId,
+                                              @PathVariable(value = "moduleId")UUID lessonId){
+
+        Optional<LessonModel> lessonModelOptional = lessonService.findLessonIntoModule(moduleId, lessonId);
+        if (!lessonModelOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lesson not found.");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(lessonModelOptional.get());
+    }
 }
