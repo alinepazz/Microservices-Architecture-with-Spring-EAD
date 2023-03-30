@@ -54,8 +54,8 @@ public class LessonController {
     }
 
     @PutMapping("/modules/{moduleId}/lessons/{lessonId}")
-    public ResponseEntity<Object>updateLesson(@PathVariable(value = "courseId")UUID moduleId,
-                                              @PathVariable(value = "moduleId")UUID lessonId,
+    public ResponseEntity<Object>updateLesson(@PathVariable(value = "moduleId")UUID moduleId,
+                                              @PathVariable(value = "lessonId")UUID lessonId,
                                               @RequestBody @Valid LessonDto lessonDto){
         Optional<LessonModel> lessonModelOptional = lessonService.findLessonIntoModule(moduleId, lessonId);
         if (!lessonModelOptional.isPresent()){
@@ -67,13 +67,13 @@ public class LessonController {
     }
 
     @GetMapping("/modules/{moduleId}/lessons")
-    public ResponseEntity<List<LessonModel>>getAllLessons(@PathVariable(value = "courseId")UUID moduleId){
+    public ResponseEntity<List<LessonModel>>getAllLessons(@PathVariable(value = "moduleId")UUID moduleId){
         return ResponseEntity.status(HttpStatus.OK).body(lessonService.findAllByModule(moduleId));
     }
 
-    @GetMapping("/courses/{courseId}/modules/{moduleId}")
-    public ResponseEntity<Object>getOneLesson(@PathVariable(value = "courseId")UUID moduleId,
-                                              @PathVariable(value = "moduleId")UUID lessonId){
+    @GetMapping("/modules/{moduleId}/lessons/{lessonId}")
+    public ResponseEntity<Object>getOneLesson(@PathVariable(value = "moduleId")UUID moduleId,
+                                              @PathVariable(value = "lessonId")UUID lessonId){
 
         Optional<LessonModel> lessonModelOptional = lessonService.findLessonIntoModule(moduleId, lessonId);
         if (!lessonModelOptional.isPresent()){
