@@ -1,6 +1,7 @@
 package com.ead.course.controllers;
 
 import com.ead.course.dtos.LessonDto;
+import com.ead.course.dtos.ModuleDto;
 import com.ead.course.models.LessonModel;
 import com.ead.course.models.ModuleModel;
 import com.ead.course.services.LessonService;
@@ -51,5 +52,18 @@ public class LessonController {
         lessonService.delete(lessonModelOptional.get());
 
         return ResponseEntity.status(HttpStatus.OK).body("Lesson deleted successfully.");
+    }
+
+    @PutMapping("/modules/{moduleId}/lessons/{lessonId}")
+    public ResponseEntity<Object>updateLesson(@PathVariable(value = "courseId")UUID moduleId,
+                                              @PathVariable(value = "moduleId")UUID lessonId,
+                                              @RequestBody @Valid LessonDto lessonDto){
+        Optional<LessonModel> lessonModelOptional = lessonService.findLessonIntoModule(moduleId, lessonId);
+        if (!lessonModelOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lesson not found.");
+        }
+        var lessonModel = lessonModelOptional.get();
+        BeanUtils.copyProperties(lessonDto, lessonModel);
+        return ResponseEntity.status(HttpStatus.OK).body(lessonService.save(lessonModel));
     }
 }
