@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -66,4 +67,10 @@ public class LessonController {
         BeanUtils.copyProperties(lessonDto, lessonModel);
         return ResponseEntity.status(HttpStatus.OK).body(lessonService.save(lessonModel));
     }
+
+    @GetMapping("/modules/{moduleId}/lessons")
+    public ResponseEntity<List<LessonModel>>getAllLessons(@PathVariable(value = "courseId")UUID moduleId){
+        return ResponseEntity.status(HttpStatus.OK).body(lessonService.findAllByModule(moduleId));
+    }
+
 }
