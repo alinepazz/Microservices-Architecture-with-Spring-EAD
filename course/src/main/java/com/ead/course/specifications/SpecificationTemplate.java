@@ -41,4 +41,13 @@ public class SpecificationTemplate {
         };
     }
 
+    public static Specification<LessonModel> lessonModuleId(final UUID moduleId){
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            criteriaQuery.distinct(true);
+            Root<LessonModel> lesson = root;
+            Root<ModuleModel> module = criteriaQuery.from(ModuleModel.class);
+            Expression<Collection<LessonModel>> moduleLessons = module.get("lessons");
+            return criteriaBuilder.and(criteriaBuilder.equal(module.get("moduleId"), moduleId), criteriaBuilder.isMember(lesson, moduleLessons));
+        };
+    }
 }
