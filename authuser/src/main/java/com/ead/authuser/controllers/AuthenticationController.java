@@ -28,10 +28,13 @@ public class AuthenticationController {
     @PostMapping("/signup")
     public ResponseEntity<Object>registerUser(@RequestBody @Validated(UserDto.UserView.RegistrationPost.class)
                                                   @JsonView(UserDto.UserView.RegistrationPost.class) UserDto userDto){
+        log.debug("POST registerUser - userDto received {} ", userDto.toString());
         if (userService.existsByUserName(userDto.getUserName())){
+            log.warn("Username {} is Already taken ", userDto.getUserName());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Username is Already taken!");
         }
         if (userService.existsByEmail(userDto.getEmail())){
+            log.warn("Email {} is Already taken ", userDto.getEmail());
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Email is Already taken!");
         }
         var userModel = new UserModel();
@@ -39,6 +42,8 @@ public class AuthenticationController {
         userModel.setUserStatus(UserStatus.ACTIVE);
         userModel.setUserType(UserType.STUDENT);
         userService.save(userModel);
+        log.debug("POST registerUser - userModel saved {} ", userModel.toString());
+        log.info("User saved successfully userId {} ", userModel.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(userModel);
     }
 }
