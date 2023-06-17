@@ -25,6 +25,14 @@ public class SpecificationTemplate {
     })
     public interface CourseSpec extends Specification<CourseModel> {}
 
+    @And({
+            @Spec(path = "email", spec = Like.class),
+            @Spec(path = "fullName", spec = Like.class),
+            @Spec(path = "userStatus", spec = Equal.class),
+            @Spec(path = "userType", spec = Equal.class)
+    })
+    public interface UserSpec extends Specification<UserModel>{}
+
     @Spec(path = "title", spec = Like.class)
     public interface ModuleSpec extends Specification<ModuleModel> {}
 
@@ -50,6 +58,26 @@ public class SpecificationTemplate {
             Root<ModuleModel> module = criteriaQuery.from(ModuleModel.class);
             Expression<Collection<LessonModel>> moduleLessons = module.get("lessons");
             return criteriaBuilder.and(criteriaBuilder.equal(module.get("moduleId"), moduleId), criteriaBuilder.isMember(lesson, moduleLessons));
+        };
+    }
+
+    public static Specification<UserModel> userCourseId(final UUID courseId){
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            criteriaQuery.distinct(true);
+            Root<UserModel> user = root;
+            Root<CourseModel> course = criteriaQuery.from(CourseModel.class);
+            Expression<Collection<UserModel>> coursesUsers = course.get("users");
+            return criteriaBuilder.and(criteriaBuilder.equal(course.get("courseId"), courseId), criteriaBuilder.isMember(user, coursesUsers));
+        };
+    }
+
+    public static Specification<CourseModel> courseUserId(final UUID userId){
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            criteriaQuery.distinct(true);
+            Root<CourseModel> course = root;
+            Root<UserModel> user = criteriaQuery.from(UserModel.class);
+            Expression<Collection<CourseModel>> usersCourses = user.get("courses");
+            return criteriaBuilder.and(criteriaBuilder.equal(user.get("userId"), userId), criteriaBuilder.isMember(course, usersCourses));
         };
     }
 }
