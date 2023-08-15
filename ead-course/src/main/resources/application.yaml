@@ -6,8 +6,14 @@ server:
 spring:
   application:
     name: ead-course-service
+  config:
+    import: 'optional:configserver:'
+  cloud:
+    config:
+      discovery:
+        service-id: ead-config-server
   datasource:
-    url: jdbc:postgresql://localhost:5432/ead-course
+    url: jdbc:postgresql://localhost:5432/ead-course-v2
     username: postgres
     password: 12345
   jpa:
@@ -22,6 +28,9 @@ spring:
   output:
     ansi:
       enabled: Always
+  rabbitmq:
+    addresses: amqps://cjcvyqwr:T5q-IJ-1vDAW5ZzE9erVjwVijjbYxdNC@jackal.rmq.cloudamqp.com/cjcvyqwr
+
 logging:
   level:
     com.ead: TRACE
@@ -33,9 +42,27 @@ ead:
   api:
     url:
       authuser: 'http://ead-authuser-service/ead-authuser'
+  broker:
+    exchange:
+      userEventExchange: ead.userevent
+      notificationCommandExchange: ead.notificationcommand
+    queue:
+      userEventQueue:
+        name: ead.userevent.ms.course
+    key:
+      notificationCommandKey: ms.notification
+
 eureka:
   client:
     serviceUrl:
       defaultZone: 'http://localhost:8761/eureka'
   instance:
     hostname: localhost
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
