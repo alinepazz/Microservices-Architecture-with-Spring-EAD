@@ -15,7 +15,7 @@ spring:
       username: configserver
       password: 'ead123cs'
 
-#  datasource:
+#  datasource: 
 #    url: jdbc:postgresql://localhost:5432/ead-course-v2
 #    username: postgres
 #    password: 12345
